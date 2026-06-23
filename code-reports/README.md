@@ -1,3 +1,5 @@
+<!-- lang:en -->
+
 # code-reports skill
 
 Deterministic internal report system for Claude Code → Claude.ai
@@ -71,3 +73,81 @@ docs/code-reports/         ← permanent, committed (if archived)
 - `code-commands` — `/context-sync` produces an implicit `extract` of
   context file drift; it does not produce a formal report file unless
   running a full A4 audit.
+
+<!-- lang:es -->
+
+# code-reports skill
+
+Sistema de informes internos determinista para la comunicación Claude Code →
+Claude.ai. Taxonomía fija, nomenclatura determinista, estructura de campos
+obligatoria y reglas de archivado explícitas.
+
+---
+
+## El problema que resuelve
+
+Sin esta skill, cada informe que Code produce tiene un nombre distinto, una
+estructura distinta y un destino de archivado decidido sobre la marcha. El
+resultado es una carpeta `docs/code-output/` con archivos como:
+- `audit-results.md`
+- `BackendReview_June.md`
+- `things-i-found.md`
+- `diagnostico-auth-2026.md`
+
+Ninguno de estos es localizable, comparable ni está estructurado de forma
+consistente.
+
+Esta skill hace que cada informe sea predecible: mismo patrón de nomenclatura,
+misma estructura de campos por tipo, mismas reglas de archivado.
+
+---
+
+## Cuatro tipos de informe
+
+| Tipo | Cuándo usarlo |
+|---|---|
+| `audit` | Revisión sistemática frente a un checklist o estándar |
+| `diagnostic` | Investigación de causa raíz de un problema concreto |
+| `extract` | Extracción factual de datos, sin juicio |
+| `snapshot` | Captura del estado previo antes de un cambio significativo |
+
+---
+
+## Nomenclatura de archivos
+
+`<type>-<topic>-<YYYY-MM-DD>.md`
+
+```
+audit-security-2026-05-12.md
+diagnostic-session-expiry-2026-06-03.md
+extract-api-endpoints-2026-04-28.md
+snapshot-auth-module-2026-05-01.md
+```
+
+---
+
+## Ciclo de vida
+
+```
+Code produce el informe
+       ↓
+docs/code-output/          ← temporal, gitignored
+       ↓
+El chat del departamento lo lee
+       ↓
+Decisión: archivar | descartar | mantener en outbox
+       ↓
+docs/code-reports/         ← permanente, commiteado (si se archiva)
+```
+
+---
+
+## Relación con otras skills
+
+- `working-system` — define el protocolo de handoff usado para solicitar
+  informes.
+- `audit-system` — las auditorías A1/A2/A3/A4 producen informes de tipo `audit`
+  siguiendo la estructura de esta skill.
+- `code-commands` — `/context-sync` produce un `extract` implícito del drift de
+  los archivos de contexto; no produce un archivo de informe formal salvo que se
+  ejecute una auditoría A4 completa.
